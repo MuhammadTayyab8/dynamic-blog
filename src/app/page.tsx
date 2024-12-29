@@ -42,7 +42,7 @@ export default function Home() {
         </div>
 
         {/* Category Menu */}
-        <div className="flex items-center lg:gap-10 pt-4 md:pt-5 gap-6 overflow-x-auto whitespace-nowrap cursor-pointer scroll-smooth scrollbar-hide">
+        <div className="no-scrollbar flex items-center lg:gap-10 pt-6 md:pt-5 gap-6 overflow-x-auto whitespace-nowrap cursor-pointer scroll-smooth scrollbar-hide">
           {["All", "Technology", "Education", "Designing"].map((category) => (
             <h2
               key={category}
@@ -51,7 +51,7 @@ export default function Home() {
                 activeCategory === category
                   ? "bg-slate-600 font-semibold"
                   : "bg-slate-800 hover:bg-slate-700"
-              } md:px-8 px-3 md:py-2 py-1 rounded-md  flex-shrink-0`}
+              } md:px-8 px-6 py-2 md:py-2 rounded-md  flex-shrink-0`}
             >
               {category}
             </h2>

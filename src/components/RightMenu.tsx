@@ -51,7 +51,7 @@ const RightMenu = () => {
 
 
       {/* Desktop Sidebar Menu */}
-      <div className="fixed hidden sm:block sm:top-[62px]  lg:top-[52px] left-0 w-52 h-screen bg-navbar border-r border-gray-700 z-40">
+      <div className="fixed hidden sm:block sm:top-[62px] lg:top-[52px] left-0 w-52 h-screen bg-navbar sm:border-r sm:border-gray-700 z-40">
         <ul className="flex flex-col space-y-4 py-8 px-4">
           {/* Home Link */}
           <li

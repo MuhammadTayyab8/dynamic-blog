@@ -14,7 +14,7 @@ import Link from 'next/link';
 // );
 
 const SkeletonCard = () => (
-  <div className="border border-gray-700 w-[280px] md:w-[240px] h-[450px] lg:w-[320px] p-3 py-6 rounded-2xl mt-6 flex flex-col gap-4 justify-between">
+  <div className="border border-gray-700 w-[290px] md:w-[240px] h-[450px] lg:w-[320px] p-3 py-6 rounded-2xl mt-6 flex flex-col gap-4 justify-between">
     <div className="w-full h-8 bg-gray-700 rounded animate-pulse"></div>
     <div className="w-3/4 h-6 bg-gray-700 rounded animate-pulse"></div>
     <div className="w-full h-40 bg-gray-700 rounded animate-pulse"></div>
@@ -81,10 +81,10 @@ const PostsPage = () => {
     <div className="pr-2 md:p-6 md:pt-0  md:pr-4 pb-28 overflow-auto">
 
 
-      <div className="flex flex-wrap justify-between">
+      <div className="flex flex-wrap justify-center sm:justify-between">
   {loading ? (
     // <Spinner />
-    <div className="flex flex-wrap gap-2 justify-between">
+    <div className="flex flex-wrap gap-2 justify-center sm:justify-between">
     {Array(9)
       .fill(0)
       .map((_, index) => (
@@ -97,7 +97,7 @@ const PostsPage = () => {
         <Link key={post.id} href={`/blog/${post.id}`}>
         <div
           key={post.id}
-          className="border border-gray-700 w-[280px] md:w-[240px] h-[450px] lg:w-[320px] p-3 rounded-2xl mt-6 cursor-pointer flex flex-col justify-between"
+          className="border border-gray-700 w-[290px] md:w-[240px] h-[450px] lg:w-[320px] p-3 rounded-2xl mt-6 cursor-pointer flex flex-col justify-between"
         >
           
 

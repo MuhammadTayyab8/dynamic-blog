@@ -17,15 +17,15 @@ const Navbar = () => {
 
   return (
     <div>
-      <div className="fixed flex z-50 w-screen overflow-x-hidden bg-navbar flex-wrap lg:flex-nowrap justify-between items-center py-2 px-4 lg:px-8 text-white border-b border-gray-700">
+      <div className="fixed flex z-50 w-screen overflow-x-hidden bg-navbar flex-wrap lg:flex-nowrap justify-between items-center py-3 px-4 lg:px-8 text-white border-b border-gray-700">
         {/* Logo */}
-        <div className="text-[18px] lg:text-[24px] font-bold mb-2 lg:mb-0 flex justify-center items-center">
+        <div className="text-[18px] lg:text-[24px] font-bold flex justify-center items-center">
           <DiCode className="w-9 h-auto text-slate-300" />
           Codes<span className="text-slate-300">blog</span>
         </div>
 
         {/* Profile Icon */}
-        <div className="relative lg:ml-4 mb-2 lg:mb-0">
+        <div className="">
           <FaUserCircle
             className="text-gray-300 w-8 h-8 cursor-pointer"
             onClick={handleToggleModal}
