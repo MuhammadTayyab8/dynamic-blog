@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FaHome, FaBloggerB, FaRegNewspaper, FaLinkedin, FaGithub, FaBehanceSquare } from 'react-icons/fa';
+import { FaHome, FaBloggerB, FaRegNewspaper, FaLinkedin, FaBehanceSquare } from 'react-icons/fa';
 
 
 const RightMenu = () => {
