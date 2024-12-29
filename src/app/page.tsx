@@ -1,101 +1,67 @@
+'use client'
+import { useState } from "react";
+import Blog from "@/components/Home";
 import Image from "next/image";
+import Hero from '../../punlic/herp.jpg';
+import AllBlog from '@/components/AllBlog';
+import Technology from '@/components/Technology';
+import Education from '@/components/Education';
+import Designing from '@/components/Designing';
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [activeCategory, setActiveCategory] = useState("All");
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  // Function to render the appropriate component based on the active category
+  const renderContent = () => {
+    switch (activeCategory) {
+      case "Technology":
+        return <Technology />;
+      case "Education":
+        return <Education />;
+      case "Designing":
+        return <Designing />;
+      default:
+        return <AllBlog />;
+    }
+  };
+
+  return (
+    <div>
+      <div className="p-1 pb-0 pt-4 pr-2 md:p-6 md:pb-2 md:pr-4 overflow-auto">
+        {/* Hero Section */}
+        <div className="relative h-[260px] rounded-2xl overflow-hidden">
+          <Image
+            src={Hero}
+            alt="Hero Image"
+            className="object-cover h-full w-full"
+          />
+          <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+            <h1 className="text-white text-2xl md:text-4xl font-bold text-center px-4">
+              Welcome to CodesBlog Explore, Learn, and Grow!
+            </h1>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+        {/* Category Menu */}
+        <div className="flex items-center lg:gap-10 pt-4 md:pt-5 gap-6 overflow-x-auto whitespace-nowrap cursor-pointer scroll-smooth scrollbar-hide">
+          {["All", "Technology", "Education", "Designing"].map((category) => (
+            <h2
+              key={category}
+              onClick={() => setActiveCategory(category)} // Update active category on click
+              className={`${
+                activeCategory === category
+                  ? "bg-slate-600 font-semibold"
+                  : "bg-slate-800 hover:bg-slate-700"
+              } md:px-8 px-3 md:py-2 py-1 rounded-md  flex-shrink-0`}
+            >
+              {category}
+            </h2>
+          ))}
+        </div>
+      </div>
+
+      {/* Render Content Based on Active Category */}
+      <div>{renderContent()}</div>
     </div>
   );
 }
