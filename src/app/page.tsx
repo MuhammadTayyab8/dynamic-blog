@@ -1,6 +1,5 @@
 'use client'
 import { useState } from "react";
-import Blog from "@/components/Home";
 import Image from "next/image";
 import Hero from '../../punlic/herp.jpg';
 import AllBlog from '@/components/AllBlog';

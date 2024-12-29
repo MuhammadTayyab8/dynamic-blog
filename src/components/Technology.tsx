@@ -1,11 +1,10 @@
 'use client'
 
 import Image from 'next/image';
-import hero from '../../punlic/herp.jpg'
 import { FaUser, FaRegShareSquare, FaEye,  } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { FaSpinner } from 'react-icons/fa'; // Example spinner from react-icons
+// import { FaSpinner } from 'react-icons/fa'; // Example spinner from react-icons
 
 // const Spinner = () => (
 // <div className="flex items-center justify-center h-[280px] w-screen">

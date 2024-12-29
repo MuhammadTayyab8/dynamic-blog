@@ -1,7 +1,5 @@
 import React from "react";
-import { FaUser, FaRegShareSquare, FaEye, FaSpinner } from 'react-icons/fa';
-import { useState } from "react";
-import { useEffect } from "react";
+import { FaUser} from 'react-icons/fa';
 import Comment from '@/components/Comment'
 import CopyUrlButton from "@/components/UrlCopy";
 
