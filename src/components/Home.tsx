@@ -95,7 +95,7 @@ const PostsPage = () => {
   ) : posts.length > 0 ? (
     <>
       {posts.map((post) => (
-        <Link href={`/blog/${post.id}`}>
+        <Link key={post.id} href={`/blog/${post.id}`}>
         <div
           key={post.id}
           className="border border-gray-700 w-[280px] md:w-[240px] h-[450px] lg:w-[320px] p-3 rounded-2xl mt-6 cursor-pointer flex flex-col justify-between"

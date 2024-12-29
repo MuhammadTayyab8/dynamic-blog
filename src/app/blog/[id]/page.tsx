@@ -51,7 +51,7 @@ const PostDetailPage = async ({ params }: { params: { id: string } }) => {
     return (
       <div>
         <h1>Post not found</h1>
-        <p>Sorry, the post you are looking for doesn't exist.</p>
+        <p>Sorry, the post you are looking for doesn&apos;t exist.</p>
       </div>
 
     );

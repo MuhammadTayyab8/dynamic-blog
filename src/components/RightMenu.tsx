@@ -92,7 +92,7 @@ const RightMenu = () => {
        <Link href='/education'><p className='flex pl-6 gap-2 items-center pt-2'> Education</p></Link>
        <Link href='/designing'><p className='flex pl-6 gap-2 items-center pt-2'> Designing</p></Link>
 
-        <h2 className='pl-6 font-bold text-slate-500 pt-6'>Let's Connect</h2>
+        <h2 className='pl-6 font-bold text-slate-500 pt-6'>Let&apos;s Connect</h2>
         <Link href='https://www.linkedin.com/authwall?trk=bf&trkInfo=AQGx1EiLjJ6b9QAAAZQQ1Fsg9D_UDgp2V4_h4CKnccSiKhUAC8ct4tZRkf-GVn2C4PMPf-2icDGq3mWWySxk_diDVe68Qs39SQYAfnOsF-Wa8cudYkYkMCVQQa9ClCxMrGggGUI=&original_referer=&sessionRedirect=https%3A%2F%2Fwww.linkedin.com%2Fin%2Fmuhammad-tayyab-982a25290%3Futm_source%3Dshare%26utm_campaign%3Dshare_via%26utm_content%3Dprofile%26utm_medium%3Dandroid_app'> <p className='flex pl-6 gap-2 items-center pt-2 cursor-pointer'><FaLinkedin /> Linkedin</p></Link>
        <Link href='https://www.behance.net/Mtayyabdesigner'> <p className='flex pl-6 gap-2 items-center pt-2 cursor-pointer'><FaBehanceSquare /> Behance</p></Link>
 
