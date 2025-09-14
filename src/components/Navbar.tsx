@@ -17,7 +17,7 @@ const Navbar = () => {
 
   return (
     <div>
-      <div className="fixed flex z-50 w-screen overflow-x-hidden bg-navbar flex-wrap lg:flex-nowrap justify-between items-center py-3 px-4 lg:px-8 text-white border-b border-gray-700">
+      <div className="fixed flex z-50 w-screen overflow-x-hidden bg-[#1b1f26] flex-wrap lg:flex-nowrap justify-between items-center py-3 px-4 lg:px-8 text-white border-b border-gray-500">
         {/* Logo */}
         <div className="text-[18px] lg:text-[24px] font-bold flex justify-center items-center">
           <DiCode className="w-9 h-auto text-slate-300" />
@@ -43,7 +43,7 @@ const Navbar = () => {
           ></div>
 
           {/* Modal Content */}
-          <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-800 text-white p-6 rounded shadow-lg z-50 w-[90%] max-w-[400px]">
+          <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#1b1f26] text-white p-6 rounded shadow-lg z-50 w-[90%] max-w-[400px]">
             <div className="text-[18px] lg:text-[24px] font-bold flex justify-center items-center">
               <DiCode className="w-9 h-auto text-slate-300" />
               Codes<span className="text-slate-300">blog</span>

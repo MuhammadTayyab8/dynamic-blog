@@ -1,11 +1,22 @@
 'use client'
 import { useState } from "react";
 import Image from "next/image";
-import Hero from '../../punlic/herp.jpg';
+import Hero from '../../public/herp.jpg';
 import AllBlog from '@/components/AllBlog';
 import Technology from '@/components/Technology';
 import Education from '@/components/Education';
 import Designing from '@/components/Designing';
+
+// # font
+import { Oxanium } from 'next/font/google'
+
+const oxanium = Oxanium({
+  subsets: ["latin"],
+  weight: ['300', '400', '500', '600', '700']
+})
+
+
+
 
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState("All");
@@ -35,7 +46,7 @@ export default function Home() {
             className="object-cover h-full w-full"
           />
           <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-            <h1 className="text-white text-2xl md:text-4xl font-bold text-center px-4">
+            <h1 className={`text-white text-2xl md:text-4xl font-normal ${oxanium.className} text-center px-4`}>
               Welcome to CodesBlog Explore, Learn, and Grow!
             </h1>
           </div>
