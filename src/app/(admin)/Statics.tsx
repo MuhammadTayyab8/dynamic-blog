@@ -1,5 +1,5 @@
 import React from "react";
-import { FaBlog, FaComments, FaCalendarAlt, FaRegComments } from "react-icons/fa";
+import { FaBlog, FaRegComments } from "react-icons/fa";
 import { IoCalendarNumberOutline } from "react-icons/io5";
 
 import { Ubuntu_Mono } from "next/font/google";

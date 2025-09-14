@@ -1,27 +1,95 @@
 'use client'
 
-import React, { useState } from 'react'
-import AddBlog from './Form'
+import React, { useRef, useState } from 'react'
 import { FaImage } from 'react-icons/fa'
+
+// import ReactQuill from "react-quill-new";
+import "react-quill-new/dist/quill.snow.css";
+import dynamic from 'next/dynamic';
+import { Quill } from 'react-quill';
+
+
+
+const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 
 const AddNewBlog = () => {
 
   const [formData, setFormData] = useState({ authorName: '', title: '', imageUrl: '', blogData: '' })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const quillRef = useRef<any>(null);
 
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData((prev) => ({ ...prev, imageUrl: reader.result as string }));
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+    setIsSubmitting(true)
+
+    // FormData banao
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      // API call karo
+      const res = await fetch("/api/uploads", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        // Server se jo URL mila usko save karo
+        setFormData((prev) => ({ ...prev, imageUrl: data.url }));
+      } else {
+        console.error("Upload failed:", data.message);
+      }
+    } catch (error) {
+      console.error("Upload error:", error);
+    } finally {
+      setIsSubmitting(false)
     }
   };
 
+
+
+
+
+  const handleImageUpload = () => {
+    const input = document.createElement("input");
+    input.setAttribute("type", "file");
+    input.setAttribute("accept", "image/*");
+    input.click();
+
+    input.onchange = async () => {
+      const file = input.files?.[0];
+      if (!file) return;
+
+      const formData = new FormData();
+      formData.append("image", file);
+
+      try {
+        const res = await fetch("/api/upload", { method: "POST", body: formData });
+        const data = await res.json();
+        if (data.success) {
+          const quill = quillRef.current?.getEditor();
+          const range = quill.getSelection();
+          quill.insertEmbed(range.index, "image", data.url);
+        }
+      } catch (error) {
+        console.error("Upload failed", error);
+      }
+    };
+  };
+
+
+
+
+
+
+
   return (
-    <div className='sm:px-4 py-2'>
+    <div className='sm:px-4 py-2 mb-16 sm:mb-0'>
 
       <div className='text-xl font-medium'>Add New Blog</div>
 
@@ -82,7 +150,7 @@ const AddNewBlog = () => {
           </label>
 
           {/* Upload Box */}
-          <div className="w-full h-10 border border-dashed border-gray-500 rounded-md flex flex-col items-center justify-center cursor-pointer hover:border-orange-500 transition bg-[#1b1f26]">
+          <div className="w-full h-[42px] border border-dashed border-gray-500 rounded-md flex flex-col items-center justify-center cursor-pointer hover:border-orange-500 transition bg-[#1b1f26]">
             <input
               type="file"
               accept="image/*"
@@ -93,7 +161,7 @@ const AddNewBlog = () => {
               <div>Uploaded</div>
             ) : (
 
-              <div className="flex flex-row gap-3 py-2 items-center text-gray-400">
+              <div className="flex flex-row gap-3 py-2.5 items-center text-gray-400">
                 <FaImage className="text-orange-400 mb-1" />
                 <p className="text-sm">Click to upload</p>
               </div>
@@ -111,7 +179,7 @@ const AddNewBlog = () => {
           </label>
 
           {/* Input */}
-          <textarea
+          {/* <textarea
             value={formData.blogData}
             rows={12}
             onChange={(e) =>
@@ -121,7 +189,34 @@ const AddNewBlog = () => {
                placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-700
                transition"
             placeholder="Enter blog content"
+          /> */}
+
+          <ReactQuill
+            // @ts-ignore
+            ref={quillRef as any}
+            value={formData.blogData}
+            onChange={(value) =>
+              setFormData((prev) => ({ ...prev, blogData: value }))
+            }
+            theme="snow"
+            className="h-auto border-none outline-none text-white rounded-md quill-dark focus:outline-none focus:ring-2 focus:ring-orange-700"
+            modules={{
+              toolbar: [
+                [{ header: [1, 2, 3, false] }],
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ color: [] }, { background: [] }],
+                [{ list: 'ordered' }, { list: 'bullet' }],
+                ['blockquote', 'code-block'],
+                ['image'],
+                ['clean'],
+              ],
+              // handlers: {
+              //   image: handleImageUpload, // 👈 custom handler
+              // },
+            }}
           />
+
+
         </div>
 
 
@@ -129,14 +224,25 @@ const AddNewBlog = () => {
 
       </div>
 
-            {/* ======== btn ===========  */}
-            <button type="button"
-              className='px-10 py-2 bg-gray-700 hover:bg-gray-500 text-white rounded-md'
-            >
-              Save
-            </button>
+      {/* ======== btn ===========  */}
+      <button type="button"
+        className='px-10 py-2 bg-gray-700 hover:bg-gray-500 text-white rounded-md'
+      >
+        Save
+      </button>
 
       {/* <AddBlog /> */}
+
+
+
+      {isSubmitting && (
+        <div className="flex items-center justify-center h-screen">
+          <div className="animate-spin h-16 w-16 border-t-4 border-slate-500 rounded-full"></div>
+        </div>
+      )}
+
+
+
     </div>
   )
 }
