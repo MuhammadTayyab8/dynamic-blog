@@ -1,12 +1,13 @@
 'use client'
 
 import React, { useRef, useState } from 'react'
-import { FaImage } from 'react-icons/fa'
+import { FaCheck, FaImage } from 'react-icons/fa'
 
 // import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import dynamic from 'next/dynamic';
 import { Quill } from 'react-quill';
+import Alert from '@/components/Alert';
 
 
 
@@ -14,7 +15,7 @@ const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 
 const AddNewBlog = () => {
 
-  const [formData, setFormData] = useState({ authorName: '', title: '', imageUrl: '', blogData: '' })
+  const [formData, setFormData] = useState({ authorName: '', title: '', imageUrl: '', blogData: '', Category: [] as string[] })
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const quillRef = useRef<any>(null);
@@ -83,6 +84,75 @@ const AddNewBlog = () => {
   };
 
 
+
+  // categories
+  const categories = ["Education", "Technology", "Designing"];
+
+  const toggleCategory = (cat: string) => {
+    setFormData((prev) => {
+      const alreadySelected = prev.Category.includes(cat)
+
+      return {
+        ...prev,
+        Category: alreadySelected
+          ? prev.Category.filter((c) => c !== cat)
+          : [...prev.Category, cat],
+      }
+    })
+  }
+
+
+
+  const [alertData, setAlertData] = useState<{
+    title: string;
+    message: string;
+    show: boolean;
+  }>({ title: "", message: "", show: false });
+
+  function showAlert(title: string, message: string) {
+    setAlertData({ title, message, show: true });
+  }
+
+
+
+
+  // ====================== https req ====================
+
+  const handlePost = async () => {
+    try {
+      setIsSubmitting(true)
+
+      const payload = {
+        Title: formData.title,
+        Author: formData.authorName,
+        Date: new Date(),
+        ImageUrl: formData.imageUrl,
+        BlogContent: formData.blogData,
+        Category: formData.Category.join(",")
+      }
+
+      const response = await fetch(`/api/blog`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        showAlert("Error", result.error || "something went wrong")
+        return
+      }
+
+      showAlert("Sccess", "Blog added.")
+
+
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
 
 
 
@@ -220,12 +290,49 @@ const AddNewBlog = () => {
         </div>
 
 
+        <div className='mt-5'>
+          <h1>Category</h1>
+
+          <div className='flex flex-col space-y-2 mt-3'>
+            {categories.map((cat) => (
+              <label key={cat} className="flex items-center space-x-2 cursor-pointer">
+                {/* hidden checkbox  */}
+                <input
+                  type="checkbox"
+                  className="hidden"
+                  checked={formData.Category.includes(cat)}
+                  onChange={() => toggleCategory(cat)}
+                />
+
+                {/* custom checkbox  */}
+                <div
+                  className={`w-5 h-5 border-2 rounded-md flex items-center justify-center transition-all
+              ${formData.Category.includes(cat)
+                      ? "bg-orange-600 border-orange-600"
+                      : "border-[#A2A1A8] bg-transparent"
+                    }`}>
+                  {formData.Category.includes(cat) && (
+                    <FaCheck size={12} className="text-white" />
+                  )}
+                </div>
+                {/* Label text */}
+                <span className="text-sm text-white">{cat}</span>
+
+              </label>
+            ))}
+
+          </div>
+
+        </div>
+
 
 
       </div>
 
       {/* ======== btn ===========  */}
-      <button type="button"
+      <button
+        onClick={handlePost}
+        type="button"
         className='px-10 py-2 bg-gray-700 hover:bg-gray-500 text-white rounded-md'
       >
         Save
@@ -236,9 +343,19 @@ const AddNewBlog = () => {
 
 
       {isSubmitting && (
-        <div className="flex items-center justify-center h-screen">
-          <div className="animate-spin h-16 w-16 border-t-4 border-slate-500 rounded-full"></div>
+         <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-60">
+            <div className="animate-spin h-16 w-16 border-t-4 border-slate-500 rounded-full"></div>
         </div>
+      )}
+
+
+
+      {alertData.show && (
+        <Alert
+          title={alertData.title}
+          message={alertData.message}
+          setIsOpen={(val) => setAlertData((prev) => ({ ...prev, show: false }))}
+        />
       )}
 
 
