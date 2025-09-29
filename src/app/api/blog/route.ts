@@ -3,15 +3,64 @@ import { db } from '../../../../lib/db'
 
 
 export async function GET(req: NextRequest) {
+
     try {
+        const { searchParams } = new URL(req.url);
+        // Get query parameters for pagination and filtering
+        const page = parseInt(searchParams.get("page") || "1");
+        const limit = parseInt(searchParams.get("limit") || "10");
+        const offset = (page - 1) * limit;
 
-        const query = `SELECT * FROM BlogData`
+        let whereClause = 'WHERE 1 = 1'
+        let values = [];
 
-        const [row] = await db.query(query)
+        const categories = searchParams.get("categories");
+        // e.g. "Education,Technology"
+        const categoryList = categories?.split(",") || [];
+
+        if (categoryList.length > 0) {
+            // add multiple FIND_IN_SET
+            const conditions = categoryList.map(() => `FIND_IN_SET(?, Category) > 0`).join(" OR ");
+            whereClause += ` AND (${conditions})`;
+            values.push(...categoryList);
+        }
+
+        if (searchParams.get("Id")) {
+            whereClause += ' AND Id = ?'
+            values.push(searchParams.get("Id"))
+        }
+
+
+        const query = `SELECT * FROM BlogData
+            ${whereClause}
+        ${limit > 0 ? "LIMIT ? OFFSET ?" : ""}
+
+        `
+
+        const [row] = await db.query(query, [...values, limit, offset])
+
+        // 2) Count query (total rows without limit/offset)
+        const countQuery = `
+        SELECT COUNT(*) as count FROM BlogData
+        ${whereClause}
+        `
+        // const [countResult] = await db.query("SELECT COUNT(*) as count FROM BlogData");
+        const [countResult] = await db.query(countQuery, values);
+        const totalRecords = countResult[0].count;
+
+        console.log(totalRecords, "totalRecords")
+        let totalPages = Math.ceil(totalRecords / limit);
+
 
         return NextResponse.json({
             success: true,
             data: row,
+            pagination: {
+                currentPage: page,
+                totalPages,
+                totalRecords,
+                perPage: limit,
+            },
         })
 
     } catch (error: any) {
@@ -97,7 +146,9 @@ export async function PUT(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
     try {
-        const {Id} = await req.json()
+        const { Id } = await req.json()
+
+        console.log(Id, "Id")
 
         const query = `
         DELETE FROM BlogData WHERE Id = ?

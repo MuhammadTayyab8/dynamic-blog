@@ -2,6 +2,7 @@ import React from 'react'
 import Statics from '../Statics'
 import { IoAdd } from 'react-icons/io5'
 import Link from 'next/link'
+import Table from '../Table'
 
 const AdminPanel = () => {
     return (
@@ -15,6 +16,8 @@ const AdminPanel = () => {
                     <Link href='/admin/add-new-blog'><span className='hidden sm:flex'>Add New Blog</span></Link>
                 </div>
             </div>
+
+            <Table />
 
 
         </div>

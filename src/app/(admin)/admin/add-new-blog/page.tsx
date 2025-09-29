@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { FaCheck, FaImage } from 'react-icons/fa'
 
 // import ReactQuill from "react-quill-new";
@@ -9,6 +9,7 @@ import dynamic from 'next/dynamic';
 import { Quill } from 'react-quill';
 import Alert from '@/components/Alert';
 import { Editor } from './Editor';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 
 
@@ -16,8 +17,14 @@ const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 
 const AddNewBlog = () => {
 
+  const searchParams = useSearchParams()
+  const router = useRouter()
+
+
   const [formData, setFormData] = useState({ authorName: '', title: '', imageUrl: '', blogData: '', Category: [] as string[] })
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const [blogId, setBlogId] = useState<number | null>(null)
 
   const quillRef = useRef<any>(null);
 
@@ -35,6 +42,9 @@ const AddNewBlog = () => {
       // API call karo
       const res = await fetch("/api/uploads", {
         method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: formData,
       });
 
@@ -56,33 +66,6 @@ const AddNewBlog = () => {
 
   console.log(formData, "formData")
 
-
-  const handleImageUpload = () => {
-    const input = document.createElement("input");
-    input.setAttribute("type", "file");
-    input.setAttribute("accept", "image/*");
-    input.click();
-
-    input.onchange = async () => {
-      const file = input.files?.[0];
-      if (!file) return;
-
-      const formData = new FormData();
-      formData.append("image", file);
-
-      try {
-        const res = await fetch("/api/upload", { method: "POST", body: formData });
-        const data = await res.json();
-        if (data.success) {
-          const quill = quillRef.current?.getEditor();
-          const range = quill.getSelection();
-          quill.insertEmbed(range.index, "image", data.url);
-        }
-      } catch (error) {
-        console.error("Upload failed", error);
-      }
-    };
-  };
 
 
 
@@ -116,8 +99,47 @@ const AddNewBlog = () => {
 
 
 
+  const handleClear = () => {
+    setFormData({ authorName: '', title: '', imageUrl: '', blogData: '', Category: [] as string[] })
+    setBlogId(null)
+  }
+
 
   // ====================== https req ====================
+  const fetchBlog = async () => {
+    try {
+      const id = searchParams.get("Id")
+
+      const response = await fetch(`/api/blog?Id=${id}`)
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to load')
+      }
+
+      const data = result?.data[0]
+
+      setBlogId(data?.Id)
+
+      setFormData({
+        authorName: data.Author,
+        title: data.Title,
+        imageUrl: data.ThumbnailImage,
+        blogData: data.BlogContent,
+        Category: data.Category.split(","),
+      })
+
+
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  useEffect(() => {
+    fetchBlog()
+  }, [])
+
+
 
   const handlePost = async () => {
     try {
@@ -145,8 +167,8 @@ const AddNewBlog = () => {
         return
       }
 
-      showAlert("Sccess", "Blog added.")
-
+      showAlert("Sccess", "Blog Added.")
+      handleClear()
 
     } catch (error) {
       console.error(error)
@@ -156,13 +178,57 @@ const AddNewBlog = () => {
   }
 
 
+  const handleUpdate = async () => {
+    try {
+      setIsSubmitting(true)
+
+      const payload = {
+        Id: blogId,
+        Title: formData.title,
+        Author: formData.authorName,
+        Date: new Date().toISOString().split("T")[0],
+        ImageUrl: formData.imageUrl,
+        BlogContent: formData.blogData,
+        Category: formData.Category.join(",")
+      }
+
+      const response = await fetch(`/api/blog`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        showAlert("Error", result.error || "something went wrong")
+        return
+      }
+
+      showAlert("Sccess", "Blog Updated.")
+      handleClear()
+
+      router.back()
+
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+
+  const handleSave = () => {
+    blogId ? handleUpdate() : handlePost()
+  }
+
 
 
 
   return (
     <div className='sm:px-4 py-2 mb-16 sm:mb-0'>
 
-      <div className='text-xl font-medium'>Add New Blog</div>
+      <div className='text-xl font-medium'>{blogId ? 'Editing' : 'Add New Blog'}</div>
 
       {/* # ================ form ================== #  */}
 
@@ -262,13 +328,13 @@ const AddNewBlog = () => {
             placeholder="Enter blog content"
           /> */}
 
-            <Editor
-              content={formData.blogData}
-              setContent={
-                (value) =>
-              setFormData((prev) => ({ ...prev, blogData: value }))
-              } 
-            />
+          <Editor
+            content={formData.blogData}
+            setContent={
+              (value) =>
+                setFormData((prev) => ({ ...prev, blogData: value }))
+            }
+          />
 
           {/* <ReactQuill
             // @ts-ignore
@@ -340,7 +406,7 @@ const AddNewBlog = () => {
 
       {/* ======== btn ===========  */}
       <button
-        onClick={handlePost}
+        onClick={handleSave}
         type="button"
         className='px-10 py-2 bg-gray-700 hover:bg-gray-500 text-white rounded-md'
       >
@@ -352,8 +418,8 @@ const AddNewBlog = () => {
 
 
       {isSubmitting && (
-         <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-60">
-            <div className="animate-spin h-16 w-16 border-t-4 border-slate-500 rounded-full"></div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-60">
+          <div className="animate-spin h-16 w-16 border-t-4 border-slate-500 rounded-full"></div>
         </div>
       )}
 
