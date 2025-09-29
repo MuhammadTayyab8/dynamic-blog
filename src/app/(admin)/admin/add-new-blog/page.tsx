@@ -8,6 +8,7 @@ import "react-quill-new/dist/quill.snow.css";
 import dynamic from 'next/dynamic';
 import { Quill } from 'react-quill';
 import Alert from '@/components/Alert';
+import { Editor } from './Editor';
 
 
 
@@ -53,7 +54,7 @@ const AddNewBlog = () => {
   };
 
 
-
+  console.log(formData, "formData")
 
 
   const handleImageUpload = () => {
@@ -125,7 +126,7 @@ const AddNewBlog = () => {
       const payload = {
         Title: formData.title,
         Author: formData.authorName,
-        Date: new Date(),
+        Date: new Date().toISOString().split("T")[0],
         ImageUrl: formData.imageUrl,
         BlogContent: formData.blogData,
         Category: formData.Category.join(",")
@@ -261,7 +262,15 @@ const AddNewBlog = () => {
             placeholder="Enter blog content"
           /> */}
 
-          <ReactQuill
+            <Editor
+              content={formData.blogData}
+              setContent={
+                (value) =>
+              setFormData((prev) => ({ ...prev, blogData: value }))
+              } 
+            />
+
+          {/* <ReactQuill
             // @ts-ignore
             ref={quillRef as any}
             value={formData.blogData}
@@ -284,7 +293,7 @@ const AddNewBlog = () => {
               //   image: handleImageUpload, // 👈 custom handler
               // },
             }}
-          />
+          /> */}
 
 
         </div>

@@ -72,8 +72,15 @@ body {
 /* Remove borders from Quill */
 .ql-toolbar.ql-snow {
   border: none !important;
-  background: #2a2f3a; /* dark toolbar */
+  background: white; /* dark toolbar */
+  
 }
+
+.ql-tooltip {
+  left: 0 !important;
+}
+
+
 
 .ql-toolbar.ql-snow:focus {
   outline: none;

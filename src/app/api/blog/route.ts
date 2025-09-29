@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
 
         const query = `
         INSERT INTO BlogData 
-        (Title, Author, CreationDate, ThumbnailImage, Category, Blog)
+        (Title, Author, CreationDate, ThumbnailImage, Category, BlogContent)
         VALUES 
         (?, ?, ?, ?, ?, ?)
         `;
@@ -69,7 +69,7 @@ export async function PUT(req: NextRequest) {
         const { Id, Title, Author, ImageUrl, BlogContent, Category } = await req.json()
 
         const query = `
-        UPDATE BlogData SET Title =?, Author =?, ThumbnailImage =?, Category =?, Blog =?
+        UPDATE BlogData SET Title =?, Author =?, ThumbnailImage =?, Category =?, BlogContent =?
         WHERE Id = ?
         `
         const values = [Title, Author, ImageUrl, Category, BlogContent, Id]
